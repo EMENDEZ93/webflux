@@ -49,5 +49,17 @@ public class ProductController {
 		
 		return "list";
 	}
+
+	@GetMapping("/chunked/products")
+	public String findAllProductChunked(Model model) {
+		Flux<Product> products = productoReactiveRepository.findAll().map(product ->{
+			product.setName(product.getName().toUpperCase());
+			return product;
+		}).repeat(5000);
+		
+		model.addAttribute("products", new ReactiveDataDriverContextVariable(products, 2));
+		
+		return "list";
+	}	
 	
 }
