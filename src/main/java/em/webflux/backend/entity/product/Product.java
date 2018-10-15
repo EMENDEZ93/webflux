@@ -17,6 +17,13 @@ public class Product {
 
 	private Date created;
 
+	public Product(String name, Double cost) {
+		this.name = name;
+		this.cost = cost;
+	}
+
+	public Product() {}
+	
 	public String getId() {
 		return id;
 	}
