@@ -1,5 +1,7 @@
 package em.webflux.backend;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,10 @@ public class WebfluxApplication implements CommandLineRunner {
 				   new Product("Elastic Search", 20.0),
 				   new Product("Qlik", 15.1)
 				)
-		.flatMap(product -> productoReactiveRepository.save(product))
+		.flatMap(product -> {
+			product.setCreated(new Date());
+			return productoReactiveRepository.save(product);
+		})
 		.subscribe(product -> log.info("Insert -> " + product.toString()));
 		
 	}
