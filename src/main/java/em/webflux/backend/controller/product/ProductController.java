@@ -60,6 +60,18 @@ public class ProductController {
 		model.addAttribute("products", new ReactiveDataDriverContextVariable(products, 2));
 		
 		return "list";
-	}	
+	}
+	
+	@GetMapping("/chunked/mode/view/names/products")
+	public String findAllProductModeViewNames(Model model) {
+		Flux<Product> products = productoReactiveRepository.findAll().map(product ->{
+			product.setName(product.getName().toUpperCase());
+			return product;
+		}).repeat(5000);
+		
+		model.addAttribute("products", new ReactiveDataDriverContextVariable(products, 2));
+		
+		return "list-chunked";
+	}
 	
 }
