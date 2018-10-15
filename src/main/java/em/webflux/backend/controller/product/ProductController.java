@@ -1,11 +1,14 @@
 package em.webflux.backend.controller.product;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable;
 
 import em.webflux.backend.entity.product.Product;
 import em.webflux.backend.repository.ProductReactiveRepository;
@@ -29,6 +32,20 @@ public class ProductController {
 		products.subscribe( product -> log.info(product.getName()) );
 		
 		model.addAttribute("products",products);
+		
+		return "list";
+	}
+	
+	@GetMapping("/data/driver/products")
+	public String findAllProductDataDriver(Model model) {
+		Flux<Product> products = productoReactiveRepository.findAll().map(product ->{
+			product.setName(product.getName().toUpperCase());
+			return product;
+		}).delayElements(Duration.ofSeconds(3));
+		
+		products.subscribe( product -> log.info(product.getName()) );
+		
+		model.addAttribute("products", new ReactiveDataDriverContextVariable(products, 2));
 		
 		return "list";
 	}
